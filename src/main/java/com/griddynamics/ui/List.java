@@ -1,8 +1,10 @@
-package com.griddynamics;
+package com.griddynamics.ui;
+
+import com.griddynamics.database.PhoneBook;
 
 import java.util.Scanner;
 
-public class List {
+public final class List {
     private final Scanner scanner;
     private final PhoneBook phoneBook;
     private boolean flag = true;
@@ -28,10 +30,12 @@ public class List {
     }
 
     private void executeCommand(String command) {
-        if (command.equals("back")) {
+        if ("back".equals(command)) {
             getBack();
         } else {
-            if (command.chars().allMatch(Character::isDigit)) {
+            if (command.isEmpty()) {
+                System.out.println("Wrong command!");
+            } else if (command.chars().allMatch(Character::isDigit)) {
                 getRecord(command);
             } else {
                 System.out.println("Wrong command!");

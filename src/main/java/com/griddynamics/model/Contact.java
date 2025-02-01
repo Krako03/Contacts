@@ -1,8 +1,9 @@
-package com.griddynamics;
+package com.griddynamics.model;
 
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public abstract class Contact implements Serializable {
     protected String name;
@@ -11,8 +12,8 @@ public abstract class Contact implements Serializable {
     private LocalDateTime timeModified;
 
     public Contact() {
-        this.timeModified = LocalDateTime.now();
-        this.timeCreated = LocalDateTime.now();
+        this.timeModified = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        this.timeCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     public abstract String[] getFieldValues();

@@ -1,17 +1,20 @@
-package com.griddynamics;
+package com.griddynamics.ui;
+
+import com.griddynamics.database.PhoneBook;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Record {
+public final class Record {
     private final Scanner scanner;
     private final PhoneBook phoneBook;
     private final boolean isFromFullList;
     private final int index;
     private boolean flag = true;
 
-    public Record(PhoneBook phoneBook, Scanner scanner, int index, boolean isFromFullList) {
+    public Record(final PhoneBook phoneBook, final Scanner scanner,
+                  final int index, final boolean isFromFullList) {
         this.phoneBook = phoneBook;
         this.scanner = scanner;
         this.index = index;
@@ -29,10 +32,13 @@ public class Record {
         }
     }
 
-    private void executeCommand(String command) {
+    private void executeCommand(final String command) {
         switch (command) {
             case "edit" -> getEditInput();
-            case "delete" -> phoneBook.deleteContact(index, isFromFullList);
+            case "delete" -> {
+                phoneBook.deleteContact(index, isFromFullList);
+                getBack();
+            }
             case "menu" -> getBack();
             default -> System.out.println("Wrong command!");
         }
@@ -45,7 +51,8 @@ public class Record {
             String field;
             String value;
 
-            String[] fields = phoneBook.getContactFieldNames(index, isFromFullList);
+            String[] fields =
+                    phoneBook.getContactFieldNames(index, isFromFullList);
 
             StringBuilder output = new StringBuilder("Select a field (");
 
@@ -53,7 +60,7 @@ public class Record {
                 output.append(fields[i]).append(", ");
             }
 
-            output.append(fields[fields.length-1]).append("): ");
+            output.append(fields[fields.length - 1]).append("): ");
 
             System.out.println(output);
             field = scanner.nextLine();
@@ -76,10 +83,9 @@ public class Record {
         flag = false;
     }
 
-    private boolean isValidPhoneNumber(String phoneNumber) {
-        // String regex = "^\\+?(?:\\([A-Za-z0-9]{1,}\\)|[A-Za-z0-9]{1,})(?:[-\\s](?:\\([A-Za-z0-9]{2,}\\)|[A-Za-z0-9]{2,}))*$";
-        String regex = "[+]?(\\(?\\w+\\)?[- ]\\w{2,}|\\w+[- ]\\(?\\w{2,}\\)?|\\(?\\w*\\)?)([- ]\\w{2,})*";
-        // String regex = "((^\\w*$)|(^\\+\\w*$)|(^\\+\\w\\s\\w{2})|(^\\d{3}\\W\\w{2,3}($|\\W\\w{2,3}$|\\W\\w{2,4}\\W\\w{2}$)))|((^\\(\\d{3}\\)($|\\W\\d{3}($|\\W\\d{3}($|\\W\\d{3}$))))|((^\\+(\\d\\W\\(\\d{3}\\)\\W\\d{3}\\W\\d{3}\\W\\w{2,4}$|\\(\\w*\\)$))|(^\\d{3}\\W\\(\\d{2,3}\\)($|\\W\\d{2,3}($|\\W\\d{2})))))";
+    private boolean isValidPhoneNumber(final String phoneNumber) {
+        String regex = "[+]?(\\(?\\w+\\)?[- ]\\w{2,}|\\w+[- ]\\(?\\w{2,}\\)?"
+                + "|\\(?\\w*\\)?)([- ]\\w{2,})*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();

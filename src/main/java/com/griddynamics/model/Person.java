@@ -1,8 +1,9 @@
-package com.griddynamics;
+package com.griddynamics.model;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
-public class Person extends Contact {
+public final class Person extends Contact {
     private String surname;
     private String birthdate;
     private String gender;
@@ -81,7 +82,7 @@ public class Person extends Contact {
             case "number" -> setPhoneNumber(value);
             default -> System.out.println("Wrong field!");
         }
-        setTimeModified(LocalDateTime.now());
+        setTimeModified(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
     }
 
     @Override

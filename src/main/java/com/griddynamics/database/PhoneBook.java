@@ -1,25 +1,31 @@
-package com.griddynamics;
+package com.griddynamics.database;
 
-import java.io.*;
+import com.griddynamics.model.Contact;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PhoneBook {
+public final class PhoneBook {
     private List<Contact> contactList;
     private List<Contact> filteredContacts;
     private boolean onMemory = false;
-    private final String uri = System.getProperty("user.dir") + "/Contacts (Java)/task/src/contacts/";
+    private final String uri = System.getProperty("user.dir")
+            + "/src/main/resources/";
     private final String[] file;
-    // private final DateTimeFormatter formatter;
 
-    public PhoneBook(String[] file) {
+    public PhoneBook(final String[] file) {
         contactList = new ArrayList<>();
         this.file = file;
-        // this.formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
     }
 
-    public void printList(boolean flag) {
+    public void printList(final boolean flag) {
         int number = 1;
         List<Contact> temp;
         if (flag) {
@@ -35,21 +41,23 @@ public class PhoneBook {
         }
     }
 
-    public void searchContact(String query) {
-        String normalizedQuery = query.toLowerCase().replaceAll("\\s+", "");
+    public void searchContact(final String query) {
+        String normalizedQuery = query.toLowerCase().replaceAll(" ", "");
 
         filteredContacts = contactList.stream()
                 .filter(obj -> {
-                    String normalizedName = Arrays.toString(obj.getFieldValues());
-                    normalizedName = normalizedName.toLowerCase().replaceAll("\\s+", "");
-                    return normalizedName.contains(normalizedQuery);
+                    String normalized = Arrays.toString(obj.getFieldValues());
+                    normalized = normalized.toLowerCase()
+                            .replaceAll(" ", "");
+                    return normalized.contains(normalizedQuery);
                 })
                 .toList();
 
         printList(false);
     }
 
-    public void printDetails(int index, boolean flag) {
+    public void printDetails(
+            int index, final boolean flag) {
         index--;
         Contact contact;
         if (flag) {
@@ -62,18 +70,18 @@ public class PhoneBook {
         String[] values = contact.getFieldValues();
 
         for (int i = 0; i < fields.length; i++) {
+
             System.out.println(fields[i] + ": " + values[i]);
         }
-        // String timeCreated = contact.getTimeCreated().format(formatter);
-        // String timeModified = contact.getTimeModified().format(formatter);
     }
 
-    public void addContact(Contact contact) {
-        contactList.addFirst(contact);
+    public void addContact(final Contact contact) {
+        contactList.add(contact);
         updateFile();
     }
 
-    public void deleteContact(int index, boolean isFromFullList) {
+    public void deleteContact(
+            int index, final boolean isFromFullList) {
         index--;
         if (isFromFullList) {
             contactList.remove(index);
@@ -84,7 +92,9 @@ public class PhoneBook {
         updateFile();
     }
 
-    public void editContact(int index, String field, String newValue, boolean isFromFullList) {
+    public void editContact(int index, final String field,
+                            final String newValue,
+                            final boolean isFromFullList) {
         index--;
         List<Contact> temp;
         if (isFromFullList) {
@@ -103,7 +113,8 @@ public class PhoneBook {
     }
 
     public void count() {
-        System.out.println("The Phone Book has " + contactList.size() + " records.");
+        System.out.println("The Phone Book has "
+                + contactList.size() + " records.");
     }
 
     public void loadFile() {
@@ -121,22 +132,17 @@ public class PhoneBook {
             File filePath = new File(uri + fileName);
 
             if (!filePath.exists()) {
-                if (filePath.createNewFile()) {
-                    // System.out.println("File created: " + fileName);
-                }
+                filePath.createNewFile();
             } else if (filePath.length() > 0) {
                 try (FileInputStream fis = new FileInputStream(filePath);
                      ObjectInputStream ois = new ObjectInputStream(fis)) {
 
                     contactList = (List<Contact>) ois.readObject();
-                    // System.out.println("Contacts loaded successfully!");
 
                 } catch (ClassNotFoundException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
-            } // else {
-            // System.out.println("File exists but is empty. No data loaded.");
-            // }
+            }
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -146,21 +152,21 @@ public class PhoneBook {
     private void updateFile() {
         if (!onMemory) {
             String fileName = (file.length == 0) ? "Contacts.db" : file[0];
-            // System.out.println("Updating file: " + fileName);
 
             try (FileOutputStream fos = new FileOutputStream(uri + fileName);
                  ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 
                 oos.writeObject(contactList);
-                // System.out.println("File updated successfully!");
 
             } catch (IOException e) {
-                System.out.println("Error while updating file: " + e.getMessage());
+                System.out.println("Error while updating file: "
+                        + e.getMessage());
             }
         }
     }
 
-    public String[] getContactFieldNames(int index, boolean isFromFullList) {
+    public String[] getContactFieldNames(
+            int index, final boolean isFromFullList) {
         index--;
         List<Contact> temp;
         if (isFromFullList) {
@@ -171,5 +177,9 @@ public class PhoneBook {
 
         Contact contact = temp.get(index);
         return contact.getEditFieldNames();
+    }
+
+    public void setOnMemory(boolean onMemory) {
+        this.onMemory = onMemory;
     }
 }

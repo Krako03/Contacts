@@ -1,9 +1,14 @@
-package com.griddynamics;
+package com.griddynamics.ui;
+
+import com.griddynamics.database.PhoneBook;
+import com.griddynamics.model.Contact;
+import com.griddynamics.model.Organization;
+import com.griddynamics.model.Person;
 
 import java.util.Scanner;
 import java.util.regex.*;
 
-public class Input {
+public final class Input {
     private final Scanner scanner;
     private final PhoneBook phoneBook;
     private boolean flag = true;
@@ -14,8 +19,6 @@ public class Input {
     }
 
     public void takeInput() {
-        phoneBook.loadFile();
-
         while (flag) {
             System.out.print("[menu] Enter action (add, list, search, count, exit): ");
             String input = scanner.nextLine();
@@ -124,7 +127,7 @@ public class Input {
     private void getList() {
         phoneBook.printList(true);
         System.out.println();
-        contacts.List list = new contacts.List(phoneBook, scanner);
+        List list = new List(phoneBook, scanner);
         list.menuList();
     }
 

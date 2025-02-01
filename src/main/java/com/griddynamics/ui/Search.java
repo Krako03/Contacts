@@ -1,8 +1,10 @@
-package com.griddynamics;
+package com.griddynamics.ui;
+
+import com.griddynamics.database.PhoneBook;
 
 import java.util.Scanner;
 
-public class Search {
+public final class Search {
     private final Scanner scanner;
     private final PhoneBook phoneBook;
     private boolean flag = true;
@@ -27,7 +29,7 @@ public class Search {
             System.out.print("[search] Enter action ([number], back, again): ");
             String command = scanner.nextLine();
             executeCommand(command);
-            if (!command.equals("back")) {
+            if (!"back".equals(command)) {
                 System.out.println();
             }
         }
@@ -42,7 +44,9 @@ public class Search {
             case "back" -> getBack();
             case "again" -> getSearchInput();
             default -> {
-                if (command.chars().allMatch(Character::isDigit)) {
+                if (command.isEmpty()) {
+                    System.out.println("Wrong command!");
+                } else if (command.chars().allMatch(Character::isDigit)) {
                     getRecord(command);
                 } else {
                     System.out.println("Wrong command!");
