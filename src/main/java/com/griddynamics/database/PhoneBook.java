@@ -151,7 +151,7 @@ public final class PhoneBook {
 
     private void updateFile() {
         if (!onMemory) {
-            String fileName = (file.length == 0) ? "Contacts.db" : file[0];
+            String fileName = file[0];
 
             try (FileOutputStream fos = new FileOutputStream(uri + fileName);
                  ObjectOutputStream oos = new ObjectOutputStream(fos)) {
@@ -177,9 +177,5 @@ public final class PhoneBook {
 
         Contact contact = temp.get(index);
         return contact.getEditFieldNames();
-    }
-
-    public void setOnMemory(boolean onMemory) {
-        this.onMemory = onMemory;
     }
 }
